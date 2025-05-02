@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    tools{
+        maven 'manev-proj'
+    }
     stages {
         stage('Checkout from git'){
             steps{
@@ -8,9 +10,10 @@ pipeline {
                 git branch:'master', url:'https://github.com/kaurjkg/petclinic.git'
             }
         }
-        stage('Build') {
+        stage('Maven Compile') {
             steps {
-                echo 'Building..'
+                echo 'This is maven compile stage..'
+                sh 'mvn compile'
             }
         }
         stage('Test') {
@@ -25,15 +28,3 @@ pipeline {
         }
     }
 }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-        always {
-            echo 'This will always run'
-        }
-    }
