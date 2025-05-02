@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools{
-        maven 'manev-proj'
+        maven 'maven-proj'
     }
     stages {
         stage('Checkout from git'){
@@ -27,4 +27,4 @@ pipeline {
             }
         }
     }
-}
+}           
