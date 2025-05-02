@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Maven Compile') {
             steps {
-                echo 'This is maven compile stage..'
+                echo 'This is maven compile stage'
                 sh 'mvn compile'
             }
         }
