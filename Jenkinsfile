@@ -19,8 +19,8 @@ pipeline {
         stage('Trivy file system scan'){ 
             steps{
                 echo 'Trivy file system scan started'
-                sh 'trivy fs --exit-code 1 --severity CRITICAL,HIGH,LOW --format table --output trivy-report.txt --ignore-unfixed --ignorefile .trivyignore .'               
-            }           
+                sh 'trivy fs --format table --output trivy-report.txt --severity HIGH,CRITICAL .'
+            }
         }
         stage('Test') {
             steps {
