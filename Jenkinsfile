@@ -3,6 +3,10 @@ pipeline {
     tools{
         maven 'maven-proj'
     }
+    environment {
+        IMAGE_NAME        = "petclinic"
+        IMAGE_TAG         = "${BUILD_NUMBER}" // Use build number as version
+    }
     stages {
         stage('Checkout from git'){
             steps{
@@ -48,6 +52,24 @@ pipeline {
         //         }
         //     }
         // }
+        //ALso skipped adding webhook for sonar quality gate
+
+        stage('Build using maven package'){
+            steps{
+                echo 'This is maven package stage'
+                sh 'mvn package'
+            }
+        }
+        stage('Build docker image'){
+            steps{
+                echo 'Building docker image'
+                script{
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    echo
+                }
+            }
+
+        }
         stage('Test') {
             steps {
                 echo 'Testing'
