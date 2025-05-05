@@ -22,6 +22,31 @@ pipeline {
                 sh 'trivy fs --format table --output trivy-report.txt --severity HIGH,CRITICAL .'
             }
         }
+        stage('Sonar Analysis') {
+            environment {
+                SCANNER_HOME = tool 'sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh '
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.organization=jasjkg \
+                        -Dsonar.projectName=petclinic \
+                        -Dsonar.projectKey=jasjkg_petclinic \
+                        -Dsonar.java.binaries=. \
+                        -Dsonar.exclusions=**/trivy-fs-output.txt
+                    '
+                }
+            }
+        }
+
+        stage('Sonar Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonarqubetoken'
+                }
+            }
+        }
         stage('Test') {
             steps {
                 echo 'Testing'

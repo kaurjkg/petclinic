@@ -24,6 +24,10 @@ echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main |
 sudo apt update
 sudo apt install trivy -y
 
+### sonarqube
+sonar project create, save project keys and token
+Create a webhook ip:8080/sonarqube-webhook/
+
 ### Docker Install
 #Docker
 curl https://get.docker.com | bash
