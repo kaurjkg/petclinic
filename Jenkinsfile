@@ -28,14 +28,15 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonar-server') {
-                    sh '
+                    // using "''' to write multi-line shell script"
+                    sh '''
                         $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.organization=jasjkg \
                         -Dsonar.projectName=petclinic \
                         -Dsonar.projectKey=jasjkg_petclinic \
                         -Dsonar.java.binaries=. \
                         -Dsonar.exclusions=**/trivy-fs-output.txt
-                    '
+                    '''
                 }
             }
         }
