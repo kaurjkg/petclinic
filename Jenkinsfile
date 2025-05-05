@@ -16,6 +16,12 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+        stage('Trivy file system scan'){ 
+            steps{
+                echo 'Trivy file system scan started'
+                sh 'trivy fs --exit-code 1 --severity CRITICAL,HIGH,LOW --format table --output trivy-report.txt --ignore-unfixed --ignorefile .trivyignore .'               
+            }           
+        }
         stage('Test') {
             steps {
                 echo 'Testing'
