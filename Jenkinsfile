@@ -9,6 +9,8 @@ pipeline {
         IMAGE_TAG         = "${BUILD_NUMBER}" // Use build number as version
         // Define the Azure Container Registry name
         ACR_NAME          = "jkgjenkins"
+        ACR_LOGIN_SERVER  = "${ACR_NAME}.azurecr.io"
+        FULL_IMAGE_NAME   = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
     stages {
         stage('Checkout from git'){
