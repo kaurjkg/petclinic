@@ -65,7 +65,7 @@ pipeline {
                 echo 'Building docker image'
                 script{
                     docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                    echo
+                    echo 'Docker image built successfully'
                 }
             }
 
