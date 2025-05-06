@@ -73,6 +73,14 @@ pipeline {
             }
 
         }
+        stage('Install Azure CLI') {
+            steps {
+                sh '''
+                    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+                    echo 'Azure CLI installed successfully'
+                '''
+            }
+        }
         stage('Login to Azure using Managed Identity') {
             steps {
                 echo 'Logging in to Azure using Managed Identity'
