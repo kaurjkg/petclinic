@@ -4,8 +4,11 @@ pipeline {
         maven 'maven-proj'
     }
     environment {
+        // Define the Docker image name and tag
         IMAGE_NAME        = "petclinic"
         IMAGE_TAG         = "${BUILD_NUMBER}" // Use build number as version
+        // Define the Azure Container Registry name
+        ACR_NAME          = "jkgacr"
     }
     stages {
         stage('Checkout from git'){
@@ -69,6 +72,26 @@ pipeline {
                 }
             }
 
+        }
+        stage('Login to Azure using Managed Identity') {
+            steps {
+                echo 'Logging in to Azure using Managed Identity'
+                sh '''
+                    az login --identity
+                    az acr login --name $ACR_NAME
+                '''
+            }
+        }
+        stage('Docker Push to ACR') {
+            steps {
+                script {
+                    echo "Docker Push Started"
+                    sh '''
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                        docker push ${FULL_IMAGE_NAME}
+                    '''
+                }
+            }
         }
         stage('Test') {
             steps {
