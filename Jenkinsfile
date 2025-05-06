@@ -8,7 +8,7 @@ pipeline {
         IMAGE_NAME        = "petclinic"
         IMAGE_TAG         = "${BUILD_NUMBER}" // Use build number as version
         // Define the Azure Container Registry name
-        ACR_NAME          = "jkgacr"
+        ACR_NAME          = "jkgjenkins"
     }
     stages {
         stage('Checkout from git'){
