@@ -11,6 +11,12 @@ pipeline {
         ACR_NAME          = "jkgjenkins"
         ACR_LOGIN_SERVER  = "${ACR_NAME}.azurecr.io"
         FULL_IMAGE_NAME   = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
+
+        //Kubernetes
+        RESOURCE_GROUP    = "rg"
+        AKS_CLUSTER       = "aksjenkins"
+        K8S_NAMESPACE     = "default"
+        K8S_DEPLOYMENT    = "petclinic"
     }
     stages {
         stage('Checkout from git'){
@@ -96,15 +102,48 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
+        stage('Azure Login to Kubernetes') {
             steps {
-                echo 'Testing'
+                withCredentials([usernamePassword(credentialsId: 'azure-acr-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+                    script {
+                        echo "Azure Login to Kubernetes Started"
+                        sh '''
+                            az login --identity
+                            az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing    
+                        '''
+                    }
+                }
             }
         }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+
+        // stage('Kubernetes Deployment') {
+        //     steps {
+        //         script {
+        //             echo "Kubernetes Deployment Stage Started"
+
+        //             def output = sh(
+        //                 script: "kubectl get deployment ${K8S_DEPLOYMENT} -n $K8S_NAMESPACE --ignore-not-found",
+        //                 returnStdout: true
+        //             ).trim()
+
+        //             def deploymentExists = output != ""
+
+        //             if (deploymentExists) {
+        //                 echo "Deployment exists. Performing rolling update with new image: ${BUILD_NUMBER}"
+        //                 sh """
+        //                     kubectl set image deployment/${K8S_DEPLOYMENT} \
+        //                     ${K8S_DEPLOYMENT}=${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${BUILD_NUMBER} \
+        //                     -n $K8S_NAMESPACE
+        //                 """
+        //             } else {
+        //                 echo "Deployment not found. Creating new deployment from template"
+        //                 sh """
+        //                     sed "s/__IMAGE_TAG__/${BUILD_NUMBER}/" k8s/sprinboot-deployment.yaml > k8s/tmp-deployment.yaml
+        //                     kubectl apply -f k8s/tmp-deployment.yaml -n $K8S_NAMESPACE
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
     }
 }           

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springboot-app
+  name: petclinic-app
   labels:
-    app: springboot-app
+    app: petclinic-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: springboot-app
+      app: petclinic-app
   template:
     metadata:
       labels:
-        app: springboot-app
+        app: petclinic-app
     spec:
       containers:
-      - name: springboot-app
-        image: jenkinsazure.azurecr.io/springbootapp:__IMAGE_TAG__
+      - name: petclinic-app
+        image: jenkinsazure.azurecr.io/petclinicapp:__IMAGE_TAG__
         ports:
         - containerPort: 8080
       imagePullSecrets:
@@ -26,13 +26,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springboot-app  
+  name: petclinic-app  
   labels:
-    app: springboot-app
+    app: petclinic-app
 spec:
   type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8080
   selector:
-    app: springboot-app
+    app: petclinic-app
