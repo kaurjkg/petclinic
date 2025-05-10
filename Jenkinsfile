@@ -104,15 +104,12 @@ pipeline {
         }
         stage('Azure Login to Kubernetes') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'azure-acr-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-                    script {
-                        echo "Azure Login to Kubernetes Started"
-                        sh '''
-                            az login --identity
-                            az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing    
-                        '''
-                    }
-                }
+                echo 'Logging in to Azure Kubernetes Service'
+                sh '''
+                    az login --identity
+                    az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+                    // kubectl config set-context --current --namespace=$K8S_NAMESPACE
+                '''
             }
         }
 
