@@ -108,7 +108,6 @@ pipeline {
                 sh '''
                     az login --identity
                     az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
-                    // kubectl config set-context --current --namespace=$K8S_NAMESPACE
                 '''
             }
         }
